@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import { obtenerDiferenciaYear, calcularMarca, calcularPlan } from '../helper';
 
 const Campo = styled.div`
     display: flex;
@@ -50,7 +51,7 @@ const Error = styled.div`
     margin-bottom: 2rem;
 `;
 
-const Formulario = () => {
+const Formulario = ({ guardarResumen }) => {
     //State
     const [ datos, guardarDatos ] = useState({
         marca: '',
@@ -82,15 +83,25 @@ const Formulario = () => {
 
         guardarError(false);
 
+        //Base
+        let resultado = 2000;
+
         //Obtener la direfencia de años
+        const diferencia = obtenerDiferenciaYear(year);
 
         //Por cada año restar el 3%
+        resultado -= (( diferencia * 3) * resultado / 100);
 
         //Americano 15, Asiático 5, Europero 30
+        resultado = resultado * calcularMarca(marca);
 
         //Basico 20%, Completo 50%
+        resultado = parseFloat(resultado * calcularPlan(plan)).toFixed(2);
 
-        //Total
+        guardarResumen({
+            cotizacion: resultado,
+            datos
+        });
     }
 
     return (
